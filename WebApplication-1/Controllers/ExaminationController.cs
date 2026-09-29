@@ -24,9 +24,7 @@ namespace WebApplication_1.Controllers
                     IsResultPublished = false,
                     IsLocked = false,
                     IsActive = true
-
-
-                },
+                                    },
 
                 new ExamMaster
                 {
