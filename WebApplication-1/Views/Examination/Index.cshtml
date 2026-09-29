@@ -1,0 +1,536 @@
+﻿@model IEnumerable<WebApplication_1.Models.ExamMaster>
+
+@{
+    ViewBag.PageTitle = "Examination Management";
+
+    var exams = Model?.ToList()
+        ?? new List<WebApplication_1.Models.ExamMaster>();
+
+    var totalExams = exams.Count;
+
+    var activeExams = exams.Count(x => x.IsActive);
+
+    var publishedExams = exams.Count(x => x.IsPublished);
+
+    var lockedExams = exams.Count(x => x.IsLocked);
+}
+
+
+<div class="exam-page">
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="page-header">
+
+        <div class="header-content">
+
+            <div class="header-icon">
+                📝
+            </div>
+
+            <div>
+
+                <h1>
+                    Examination Management
+                </h1>
+
+                <p>
+                    Create and manage examinations, schedules and results.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+
+            <span>+</span>
+
+            Create Examination
+
+        </a>
+
+    </div>
+
+
+
+    <!-- =========================================
+         SUCCESS MESSAGE
+    ========================================== -->
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-success">
+
+            <span class="alert-icon">
+                ✓
+            </span>
+
+            <div>
+                <strong>
+                    Success
+                </strong>
+
+                <p>
+                    @TempData["SuccessMessage"]
+                </p>
+            </div>
+
+        </div>
+    }
+
+
+
+    <!-- =========================================
+         STATISTICS
+    ========================================== -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📝
+            </div>
+
+            <div>
+
+                <span>
+                    Total Exams
+                </span>
+
+                <strong>
+                    @totalExams
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon active">
+                ✓
+            </div>
+
+            <div>
+
+                <span>
+                    Active Exams
+                </span>
+
+                <strong>
+                    @activeExams
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon published">
+                📢
+            </div>
+
+            <div>
+
+                <span>
+                    Published
+                </span>
+
+                <strong>
+                    @publishedExams
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon locked">
+                🔒
+            </div>
+
+            <div>
+
+                <span>
+                    Locked
+                </span>
+
+                <strong>
+                    @lockedExams
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         EXAM CARD
+    ========================================== -->
+
+    <div class="exam-card">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Examination List
+                </h2>
+
+                <p>
+                    View and manage all examinations.
+                </p>
+
+            </div>
+
+
+            <div class="record-count">
+
+                Total Records:
+
+                <strong>
+                    @totalExams
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- SEARCH -->
+
+        <div class="toolbar">
+
+            <div class="search-box">
+
+                <span>
+                    🔍
+                </span>
+
+                <input type="text"
+                       id="examSearch"
+                       placeholder="Search examination..." />
+
+            </div>
+
+
+            <select id="statusFilter">
+
+                <option value="all">
+                    All Status
+                </option>
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Examination
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Semester
+                        </th>
+
+                        <th>
+                            Schedule
+                        </th>
+
+                        <th>
+                            Weightage
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="examTable">
+
+                    @foreach (var exam in exams)
+                    {
+                        <tr
+                            data-status="@(exam.IsActive ? "active" : "inactive")">
+
+                            <td>
+
+                                <span class="id-badge">
+                                    #@exam.ExaminationID
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="exam-info">
+
+                                    <div class="exam-icon">
+                                        📝
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            @exam.ExamName
+                                        </strong>
+
+                                        <span>
+                                            @exam.ExamCode
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="type-badge">
+                                    @exam.ExamType
+                                </span>
+
+                            </td>
+
+
+                            <td>
+                                @exam.Semester
+                            </td>
+
+
+                            <td>
+
+                                <div class="date-range">
+
+                                    <strong>
+                                        @exam.StartDate?.ToString("dd MMM yyyy")
+                                    </strong>
+
+                                    <span>
+                                        to
+                                    </span>
+
+                                    <strong>
+                                        @exam.EndDate?.ToString("dd MMM yyyy")
+                                    </strong>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="weightage">
+                                    @exam.Weightage%
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                @if (exam.IsLocked)
+                                {
+                                    <span class="status locked">
+                                        🔒 Locked
+                                    </span>
+                                }
+                                else if (exam.IsPublished)
+                                {
+                                    <span class="status published">
+                                        ● Published
+                                    </span>
+                                }
+                                else if (exam.IsActive)
+                                {
+                                    <span class="status active">
+                                        ● Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status inactive">
+                                        ● Inactive
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="actions">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@exam.ExaminationID"
+                                       class="action view">
+
+                                        View
+
+                                    </a>
+
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@exam.ExaminationID"
+                                       class="action edit">
+
+                                        Edit
+
+                                    </a>
+
+
+                                    <form asp-action="Delete"
+                                          asp-route-id="@exam.ExaminationID"
+                                          method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete this examination?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="action delete">
+
+                                            Delete
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        const search =
+            document.getElementById("examSearch");
+
+        const status =
+            document.getElementById("statusFilter");
+
+        const rows =
+            document.querySelectorAll("#examTable tr");
+
+
+        function filterExams() {
+
+            const searchValue =
+                search.value.toLowerCase();
+
+            const statusValue =
+                status.value.toLowerCase();
+
+
+            rows.forEach(row => {
+
+                const text =
+                    row.innerText.toLowerCase();
+
+                const rowStatus =
+                    row.dataset.status;
+
+
+                const searchMatch =
+                    text.includes(searchValue);
+
+
+                const statusMatch =
+                    statusValue === "all" ||
+                    rowStatus === statusValue;
+
+
+                row.style.display =
+                    searchMatch && statusMatch
+                        ? ""
+                        : "none";
+
+            });
+
+        }
+
+
+        search.addEventListener(
+            "input",
+            filterExams
+        );
+
+
+        status.addEventListener(
+            "change",
+            filterExams
+        );
+
+    </script>
+
+}

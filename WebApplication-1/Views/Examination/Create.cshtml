@@ -1,0 +1,573 @@
+﻿@model WebApplication_1.Models.ExamMaster
+
+@{
+    ViewBag.PageTitle = "Create Examination";
+}
+
+<div class="exam-create-page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+        <div class="header-content">
+
+            <div class="header-icon">
+                📝
+            </div>
+
+            <div>
+                <h1>Create Examination</h1>
+
+                <p>
+                    Create and configure a new examination.
+                </p>
+            </div>
+
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-back">
+
+            ← Back to Exams
+
+        </a>
+
+    </div>
+
+
+    <!-- FORM CARD -->
+    <div class="exam-form-card">
+
+        <!-- CARD HEADER -->
+        <div class="exam-card-header">
+
+            <div>
+                <h2>Examination Details</h2>
+
+                <p>
+                    Enter the basic information and schedule
+                    for this examination.
+                </p>
+            </div>
+
+            <span class="required-note">
+                <span class="required">*</span>
+                Required fields
+            </span>
+
+        </div>
+
+
+        <form asp-action="Create"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+
+            <!-- VALIDATION -->
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+
+            <!-- BASIC INFORMATION -->
+            <div class="exam-section">
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        01
+                    </div>
+
+                    <div>
+                        <h3>Basic Information</h3>
+
+                        <p>
+                            Enter examination identification details.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="exam-form-grid">
+
+
+                    <!-- EXAM CODE -->
+                    <div class="form-group">
+
+                        <label asp-for="ExamCode">
+                            Exam Code
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                #
+                            </span>
+
+                            <input asp-for="ExamCode"
+                                   class="form-control"
+                                   placeholder="Example: MID-2026"
+                                   autocomplete="off" />
+
+                        </div>
+
+                        <span asp-validation-for="ExamCode"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <!-- EXAM NAME -->
+                    <div class="form-group">
+
+                        <label asp-for="ExamName">
+                            Exam Name
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                📝
+                            </span>
+
+                            <input asp-for="ExamName"
+                                   class="form-control"
+                                   placeholder="Example: Mid Term Examination" />
+
+                        </div>
+
+                        <span asp-validation-for="ExamName"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <!-- EXAM TYPE -->
+                    <div class="form-group">
+
+                        <label asp-for="ExamType">
+                            Exam Type
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                📚
+                            </span>
+
+                            <select asp-for="ExamType"
+                                    class="form-control">
+
+                                <option value="">
+                                    Select Exam Type
+                                </option>
+
+                                <option value="Theory">
+                                    Theory
+                                </option>
+
+                                <option value="Practical">
+                                    Practical
+                                </option>
+
+                                <option value="Internal">
+                                    Internal
+                                </option>
+
+                                <option value="Unit Test">
+                                    Unit Test
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SEMESTER -->
+                    <div class="form-group">
+
+                        <label asp-for="Semester">
+                            Semester
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                🎓
+                            </span>
+
+                            <select asp-for="Semester"
+                                    class="form-control">
+
+                                <option value="">
+                                    Select Semester
+                                </option>
+
+                                <option value="Semester 1">
+                                    Semester 1
+                                </option>
+
+                                <option value="Semester 2">
+                                    Semester 2
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SEQUENCE -->
+                    <div class="form-group">
+
+                        <label asp-for="SequenceNo">
+                            Sequence
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ↕
+                            </span>
+
+                            <input asp-for="SequenceNo"
+                                   class="form-control"
+                                   type="number"
+                                   min="1"
+                                   placeholder="1" />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- WEIGHTAGE -->
+                    <div class="form-group">
+
+                        <label asp-for="Weightage">
+                            Weightage (%)
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                %
+                            </span>
+
+                            <input asp-for="Weightage"
+                                   class="form-control"
+                                   type="number"
+                                   min="0"
+                                   max="100"
+                                   step="0.01"
+                                   placeholder="30" />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EXAM SCHEDULE -->
+            <div class="exam-section">
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        02
+                    </div>
+
+                    <div>
+                        <h3>Examination Schedule</h3>
+
+                        <p>
+                            Configure the examination start and end dates.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="exam-form-grid">
+
+                    <!-- START DATE -->
+                    <div class="form-group">
+
+                        <label asp-for="StartDate">
+                            Start Date
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                📅
+                            </span>
+
+                            <input asp-for="StartDate"
+                                   class="form-control"
+                                   type="date" />
+
+                        </div>
+
+                        <span asp-validation-for="StartDate"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <!-- END DATE -->
+                    <div class="form-group">
+
+                        <label asp-for="EndDate">
+                            End Date
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                📅
+                            </span>
+
+                            <input asp-for="EndDate"
+                                   class="form-control"
+                                   type="date" />
+
+                        </div>
+
+                        <span asp-validation-for="EndDate"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+                    <div class="form-group full-width">
+
+                        <label asp-for="Description">
+                            Description
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control textarea"
+                                  rows="4"
+                                  placeholder="Enter examination description..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATUS -->
+            <div class="exam-section status-section">
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        03
+                    </div>
+
+                    <div>
+                        <h3>Examination Status</h3>
+
+                        <p>
+                            Configure the current examination state.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="status-grid">
+
+
+                    <!-- ACTIVE -->
+                    <div class="status-card">
+
+                        <div class="status-card-info">
+
+                            <div class="status-card-icon active">
+                                ✓
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Active Examination
+                                </strong>
+
+                                <p>
+                                    Enable this examination
+                                    for academic use.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input asp-for="IsActive" />
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- PUBLISHED -->
+                    <div class="status-card">
+
+                        <div class="status-card-info">
+
+                            <div class="status-card-icon published">
+                                📢
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Publish Examination
+                                </strong>
+
+                                <p>
+                                    Make the examination visible
+                                    to users.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input asp-for="IsPublished" />
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- RESULT -->
+                    <div class="status-card">
+
+                        <div class="status-card-info">
+
+                            <div class="status-card-icon result">
+                                📊
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Result Published
+                                </strong>
+
+                                <p>
+                                    Mark examination results
+                                    as published.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input asp-for="IsResultPublished" />
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- LOCK -->
+                    <div class="status-card">
+
+                        <div class="status-card-info">
+
+                            <div class="status-card-icon locked">
+                                🔒
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Lock Examination
+                                </strong>
+
+                                <p>
+                                    Prevent further modifications.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input asp-for="IsLocked" />
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+            <div class="exam-form-actions">
+
+                <a asp-action="Index"
+                   class="btn btn-cancel">
+
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    ✓ Create Examination
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

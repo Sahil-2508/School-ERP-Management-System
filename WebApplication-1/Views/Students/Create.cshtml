@@ -1,0 +1,283 @@
+﻿@model WebApplication_1.Models.Student
+
+@{
+    ViewBag.PageTitle = "Add Student";
+}
+
+<div class="student-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <span>🎓</span>
+            </div>
+
+            <div>
+                <h1>Add Student</h1>
+                <p>Create a new student record in the system</p>
+            </div>
+        </div>
+
+        <a asp-action="Index" class="btn btn-back">
+            <span>←</span>
+            Back to Students
+        </a>
+    </div>
+
+
+    <!-- Main Form Card -->
+    <div class="form-card">
+
+        <div class="card-header">
+            <div>
+                <h2>Student Information</h2>
+                <p>Enter the student's basic information below.</p>
+            </div>
+
+            <div class="required-note">
+                <span>*</span> Required fields
+            </div>
+        </div>
+
+
+        <form asp-action="Create" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <!-- Validation Summary -->
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+
+            <div class="form-section">
+
+                <div class="section-title">
+                    <span class="section-number">01</span>
+
+                    <div>
+                        <h3>Basic Information</h3>
+                        <p>Student personal details</p>
+                    </div>
+                </div>
+
+
+                <div class="form-grid">
+
+                    <!-- Student Name -->
+                    <div class="form-group full-width">
+
+                        <label asp-for="StudentName">
+                            Student Name
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+
+                            <input asp-for="StudentName"
+                                   class="form-control"
+                                   placeholder="Enter student's full name"
+                                   autocomplete="name" />
+                        </div>
+
+                        <span asp-validation-for="StudentName"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Email -->
+                    <div class="form-group">
+
+                        <label asp-for="Email">
+                            Email Address
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉</span>
+
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="student@gmail.com"
+                                   autocomplete="email" />
+                        </div>
+
+                        <span asp-validation-for="Email"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Phone -->
+                    <div class="form-group">
+
+                        <label asp-for="PhoneNumber">
+                            Phone Number
+                        </label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">📱</span>
+
+                            <input asp-for="PhoneNumber"
+                                   type="tel"
+                                   class="form-control"
+                                   placeholder="9876543210"
+                                   maxlength="10"
+                                   autocomplete="tel" />
+                        </div>
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Academic Information -->
+            <div class="form-section">
+
+                <div class="section-title">
+                    <span class="section-number">02</span>
+
+                    <div>
+                        <h3>Academic Information</h3>
+                        <p>Class and division details</p>
+                    </div>
+                </div>
+
+
+                <div class="form-grid">
+
+                    <!-- Class -->
+                    <div class="form-group">
+
+                        <label asp-for="ClassName">
+                            Class
+                        </label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">📚</span>
+
+                            <input asp-for="ClassName"
+                                   class="form-control"
+                                   placeholder="e.g. 10th" />
+                        </div>
+
+                        <span asp-validation-for="ClassName"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Division -->
+                    <div class="form-group">
+
+                        <label asp-for="Division">
+                            Division
+                        </label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏫</span>
+
+                            <input asp-for="Division"
+                                   class="form-control"
+                                   placeholder="e.g. A" />
+                        </div>
+
+                        <span asp-validation-for="Division"
+                              class="field-validation">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Status -->
+            <div class="form-section status-section">
+
+                <div class="section-title">
+                    <span class="section-number">03</span>
+
+                    <div>
+                        <h3>Student Status</h3>
+                        <p>Manage student account status</p>
+                    </div>
+                </div>
+
+
+                <div class="status-box">
+
+                    <div class="status-info">
+
+                        <div class="status-icon">
+                            ✓
+                        </div>
+
+                        <div>
+                            <strong>Active Student</strong>
+
+                            <p>
+                                Active students can access the
+                                school ERP system.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input asp-for="IsActive" />
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer Actions -->
+            <div class="form-actions">
+
+                <a asp-action="Index"
+                   class="btn btn-cancel">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <span>✓</span>
+                    Create Student
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

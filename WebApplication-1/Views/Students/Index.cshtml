@@ -1,0 +1,920 @@
+﻿@model IEnumerable<WebApplication_1.Models.Student>
+
+@{
+    ViewBag.PageTitle = "Student Management";
+
+    var students = Model?.ToList()
+        ?? new List<WebApplication_1.Models.Student>();
+
+    var totalStudents = students.Count;
+
+    var activeStudents = students.Count(x => x.IsActive);
+
+    var inactiveStudents = students.Count(x => !x.IsActive);
+
+    var classCount = students
+        .Where(x => !string.IsNullOrWhiteSpace(x.ClassName))
+        .Select(x => x.ClassName)
+        .Distinct()
+        .Count();
+}
+
+
+<div class="student-page">
+
+
+    <!-- =====================================
+         PAGE HEADER
+    ====================================== -->
+
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <div class="header-icon">
+                🎓
+            </div>
+
+            <div>
+
+                <h1>
+                    Student Management
+                </h1>
+
+                <p>
+                    Manage students, classes and enrollment information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+
+            <span class="btn-icon">
+                +
+            </span>
+
+            Add Student
+
+        </a>
+
+    </div>
+
+
+
+    <!-- =====================================
+         SUCCESS MESSAGE
+    ====================================== -->
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-success">
+
+            <div class="alert-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <strong>
+                    Success
+                </strong>
+
+                <p>
+                    @TempData["SuccessMessage"]
+                </p>
+
+            </div>
+
+
+            <button type="button"
+                    class="alert-close"
+                    onclick="this.parentElement.remove()">
+
+                ×
+
+            </button>
+
+        </div>
+    }
+
+
+
+    <!-- =====================================
+         STATISTICS
+    ====================================== -->
+
+    <div class="stats-grid">
+
+
+        <!-- Total -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon total">
+                👨‍🎓
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Total Students
+                </span>
+
+                <strong>
+                    @totalStudents
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Active -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon active">
+                ✓
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Active Students
+                </span>
+
+                <strong>
+                    @activeStudents
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Inactive -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon inactive">
+                ○
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Inactive Students
+                </span>
+
+                <strong>
+                    @inactiveStudents
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Classes -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon classes">
+                📚
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Classes
+                </span>
+
+                <strong>
+                    @classCount
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         MAIN CARD
+    ====================================== -->
+
+    <div class="student-card">
+
+
+        <!-- Card Header -->
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Students
+                </h2>
+
+                <p>
+                    View and manage registered students.
+                </p>
+
+            </div>
+
+
+            <div class="record-count">
+
+                <span>
+                    Total Records
+                </span>
+
+                <strong>
+                    @totalStudents
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             SEARCH / FILTER
+        ====================================== -->
+
+        <div class="table-toolbar">
+
+
+            <!-- Search -->
+
+            <div class="search-box">
+
+                <span class="search-icon">
+                    🔍
+                </span>
+
+                <input type="text"
+                       id="studentSearch"
+                       placeholder="Search student, email or phone..."
+                       autocomplete="off" />
+
+            </div>
+
+
+
+            <!-- Filters -->
+
+            <div class="filters">
+
+
+                <select id="classFilter"
+                        class="filter-select">
+
+                    <option value="all">
+                        All Classes
+                    </option>
+
+
+                    @foreach (var className in students
+                        .Where(x => !string.IsNullOrWhiteSpace(x.ClassName))
+                        .Select(x => x.ClassName)
+                        .Distinct()
+                        .OrderBy(x => x))
+                    {
+                        <option value="@className">
+                            @className
+                        </option>
+                    }
+
+                </select>
+
+
+
+                <select id="divisionFilter"
+                        class="filter-select">
+
+                    <option value="all">
+                        All Divisions
+                    </option>
+
+
+                    @foreach (var division in students
+                        .Where(x => !string.IsNullOrWhiteSpace(x.Division))
+                        .Select(x => x.Division)
+                        .Distinct()
+                        .OrderBy(x => x))
+                    {
+                        <option value="@division">
+                            Division @division
+                        </option>
+                    }
+
+                </select>
+
+
+
+                <select id="statusFilter"
+                        class="filter-select">
+
+                    <option value="all">
+                        All Status
+                    </option>
+
+                    <option value="active">
+                        Active
+                    </option>
+
+                    <option value="inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             TABLE
+        ====================================== -->
+
+        <div class="table-container">
+
+            <table class="student-table">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th class="id-column">
+                            ID
+                        </th>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Class
+                        </th>
+
+                        <th>
+                            Division
+                        </th>
+
+                        <th>
+                            Phone
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th class="actions-column">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody id="studentTableBody">
+
+
+                    @if (!students.Any())
+                    {
+                        <tr>
+
+                            <td colspan="8"
+                                class="empty-state">
+
+                                <div class="empty-icon">
+                                    🎓
+                                </div>
+
+                                <h3>
+                                    No Students Found
+                                </h3>
+
+                                <p>
+                                    There are currently no students
+                                    registered in the system.
+                                </p>
+
+                                <a asp-action="Create"
+                                   class="btn btn-primary">
+
+                                    + Add Student
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+                    else
+                    {
+
+                        @foreach (var student in students)
+                        {
+
+                            <tr class="student-row"
+                                data-class="@student.ClassName"
+                                data-division="@student.Division"
+                                data-status="@(student.IsActive ? "active" : "inactive")">
+
+
+                                <!-- =================================
+                                     ID
+                                ================================== -->
+
+                                <td>
+
+                                    <span class="id-badge">
+                                        #@student.StudentId
+                                    </span>
+
+                                </td>
+
+
+
+                                <!-- =================================
+                                     STUDENT
+                                ================================== -->
+
+                                <td>
+
+                                    <div class="student-info">
+
+
+                                        <div class="avatar">
+
+                                            @(string.IsNullOrWhiteSpace(student.StudentName)
+                                                ? "?"
+                                                : student.StudentName
+                                                    .Substring(0, 1)
+                                                    .ToUpper())
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <strong class="student-name">
+
+                                                @student.StudentName
+
+                                            </strong>
+
+
+                                            <span class="student-id">
+
+                                                Student ID:
+                                                @student.StudentId
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+
+                                <!-- =================================
+                                     EMAIL
+                                ================================== -->
+
+                                <td>
+
+                                    @if (!string.IsNullOrWhiteSpace(student.Email))
+                                    {
+                                        <span class="email-text">
+
+                                            @student.Email
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="not-available">
+                                            Not available
+                                        </span>
+                                    }
+
+                                </td>
+
+
+
+                                <!-- =================================
+                                     CLASS
+                                ================================== -->
+
+                                <td>
+
+                                    <span class="class-badge">
+
+                                        @(
+                                            string.IsNullOrWhiteSpace(student.ClassName)
+                                                ? "-"
+                                                : student.ClassName
+                                        )
+
+                                    </span>
+
+                                </td>
+
+
+
+                                <!-- =================================
+                                     DIVISION
+                                ================================== -->
+
+                                <td>
+
+                                    <span class="division-badge">
+
+                                        @(
+                                            string.IsNullOrWhiteSpace(student.Division)
+                                                ? "-"
+                                                : student.Division
+                                        )
+
+                                    </span>
+
+                                </td>
+
+
+
+                                <!-- =================================
+                                     PHONE
+                                ================================== -->
+
+                                <td>
+
+                                    @if (!string.IsNullOrWhiteSpace(student.PhoneNumber))
+                                    {
+                                        <span class="phone-text">
+
+                                            📱
+                                            @student.PhoneNumber
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="not-available">
+                                            Not available
+                                        </span>
+                                    }
+
+                                </td>
+
+
+
+                                <!-- =================================
+                                     STATUS
+                                ================================== -->
+
+                                <td>
+
+                                    @if (student.IsActive)
+                                    {
+                                        <span class="status-badge active">
+
+                                            <span class="status-dot"></span>
+
+                                            Active
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge inactive">
+
+                                            <span class="status-dot"></span>
+
+                                            Inactive
+
+                                        </span>
+                                    }
+
+                                </td>
+
+
+
+                                <!-- =================================
+                                     ACTIONS
+                                ================================== -->
+
+                                <td>
+
+                                    <div class="actions">
+
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@student.StudentId"
+                                           class="action-btn view"
+                                           title="View Student">
+
+                                            <span>
+                                                👁
+                                            </span>
+
+                                            View
+
+                                        </a>
+
+
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@student.StudentId"
+                                           class="action-btn edit"
+                                           title="Edit Student">
+
+                                            <span>
+                                                ✎
+                                            </span>
+
+                                            Edit
+
+                                        </a>
+
+
+
+                                        <form asp-action="Delete"
+                                              asp-route-id="@student.StudentId"
+                                              method="post"
+                                              class="delete-form"
+                                              onsubmit="return confirmDelete('@student.StudentName');">
+
+                                            @Html.AntiForgeryToken()
+
+
+                                            <button type="submit"
+                                                    class="action-btn delete"
+                                                    title="Delete Student">
+
+                                                <span>
+                                                    🗑
+                                                </span>
+
+                                                Delete
+
+                                            </button>
+
+                                        </form>
+
+
+                                    </div>
+
+                                </td>
+
+
+                            </tr>
+                        }
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <!-- =====================================
+             TABLE FOOTER
+        ====================================== -->
+
+        @if (students.Any())
+        {
+            <div class="table-footer">
+
+                <div class="showing-text">
+
+                    Showing
+
+                    <strong id="visibleCount">
+                        @totalStudents
+                    </strong>
+
+                    of
+
+                    <strong>
+                        @totalStudents
+                    </strong>
+
+                    students
+
+                </div>
+
+
+                <div class="footer-info">
+                    Student Management
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+
+        const searchInput =
+            document.getElementById("studentSearch");
+
+        const classFilter =
+            document.getElementById("classFilter");
+
+        const divisionFilter =
+            document.getElementById("divisionFilter");
+
+        const statusFilter =
+            document.getElementById("statusFilter");
+
+        const rows =
+            document.querySelectorAll(".student-row");
+
+        const visibleCount =
+            document.getElementById("visibleCount");
+
+
+        function filterStudents() {
+
+            const searchValue =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+
+            const selectedClass =
+                classFilter.value
+                    .toLowerCase();
+
+
+            const selectedDivision =
+                divisionFilter.value
+                    .toLowerCase();
+
+
+            const selectedStatus =
+                statusFilter.value
+                    .toLowerCase();
+
+
+            let count = 0;
+
+
+            rows.forEach(row => {
+
+
+                const rowText =
+                    row.innerText.toLowerCase();
+
+
+                const rowClass =
+                    row.dataset.class
+                        .toLowerCase();
+
+
+                const rowDivision =
+                    row.dataset.division
+                        .toLowerCase();
+
+
+                const rowStatus =
+                    row.dataset.status
+                        .toLowerCase();
+
+
+                const matchesSearch =
+                    rowText.includes(searchValue);
+
+
+                const matchesClass =
+                    selectedClass === "all" ||
+                    rowClass === selectedClass;
+
+
+                const matchesDivision =
+                    selectedDivision === "all" ||
+                    rowDivision === selectedDivision;
+
+
+                const matchesStatus =
+                    selectedStatus === "all" ||
+                    rowStatus === selectedStatus;
+
+
+                if (
+                    matchesSearch &&
+                    matchesClass &&
+                    matchesDivision &&
+                    matchesStatus
+                ) {
+
+                    row.style.display = "";
+
+                    count++;
+
+                }
+                else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+
+            if (visibleCount) {
+
+                visibleCount.innerText =
+                    count;
+
+            }
+
+        }
+
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                filterStudents
+            );
+
+        }
+
+
+        if (classFilter) {
+
+            classFilter.addEventListener(
+                "change",
+                filterStudents
+            );
+
+        }
+
+
+        if (divisionFilter) {
+
+            divisionFilter.addEventListener(
+                "change",
+                filterStudents
+            );
+
+        }
+
+
+        if (statusFilter) {
+
+            statusFilter.addEventListener(
+                "change",
+                filterStudents
+            );
+
+        }
+
+
+        function confirmDelete(studentName) {
+
+            return confirm(
+                "Are you sure you want to delete \"" +
+                studentName +
+                "\"?"
+            );
+
+        }
+
+    </script>
+
+}

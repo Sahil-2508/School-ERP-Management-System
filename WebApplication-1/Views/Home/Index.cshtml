@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.PageTitle = "Dashboard";
+}
+
+<div class="welcome-page">
+
+    <div class="welcome-banner">
+
+        <div>
+
+            <span class="welcome-small">
+                SCHOOL MANAGEMENT SYSTEM
+            </span>
+
+            <h1>
+                Welcome to School ERP 👋
+            </h1>
+
+            <p>
+                Manage students, examinations and academic
+                activities from one place.
+            </p>
+
+        </div>
+
+        <div class="welcome-illustration">
+            🎓
+        </div>
+
+    </div>
+
+
+    <div class="welcome-section">
+
+        <h2>
+            Quick Access
+        </h2>
+
+        <p>
+            Choose a module to get started.
+        </p>
+
+    </div>
+
+
+    <div class="welcome-cards">
+
+
+        <a asp-controller="Student"
+           asp-action="Index"
+           class="welcome-card">
+
+            <div class="welcome-card-icon">
+                👨‍🎓
+            </div>
+
+            <h3>
+                Student Management
+            </h3>
+
+            <p>
+                Manage student records,
+                classes and enrollment.
+            </p>
+
+            <span>
+                Open Students →
+            </span>
+
+        </a>
+
+
+        <a asp-controller="Examination"
+           asp-action="Index"
+           class="welcome-card">
+
+            <div class="welcome-card-icon exam">
+                📝
+            </div>
+
+            <h3>
+                Examination
+            </h3>
+
+            <p>
+                Manage examinations,
+                evaluations and grading.
+            </p>
+
+            <span>
+                Open Examination →
+            </span>
+
+        </a>
+
+    </div>
+
+</div>

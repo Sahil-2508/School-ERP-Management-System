@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewBag.PageTitle - School ERP
+    </title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <!-- ERP Layout CSS -->
+    <link rel="stylesheet"
+          href="~/css/erp-layout.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+
+<body>
+
+    <div class="erp-layout">
+
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <aside class="sidebar" id="sidebar">
+
+            <!-- LOGO -->
+
+            <div class="sidebar-logo">
+
+                <div class="school-logo">
+                    🎓
+                </div>
+
+                <div class="school-name">
+
+                    <strong>
+                        School ERP
+                    </strong>
+
+                    <span>
+                        Management System
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <nav class="sidebar-nav">
+
+
+                <!-- MAIN -->
+
+                <div class="nav-section">
+
+                    <div class="nav-title">
+                        MAIN
+                    </div>
+
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="nav-item">
+
+                        <span class="nav-icon">
+                            🏠
+                        </span>
+
+                        <span>
+                            Dashboard
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- STUDENTS -->
+
+                <div class="nav-section">
+
+                    <div class="nav-title">
+                        STUDENT MANAGEMENT
+                    </div>
+
+                    <a asp-controller="Student"
+                       asp-action="Index"
+                       class="nav-item">
+
+                        <span class="nav-icon">
+                            👨‍🎓
+                        </span>
+
+                        <span>
+                            Students
+                        </span>
+
+                    </a>
+
+
+                    <a asp-controller="Student"
+                       asp-action="Create"
+                       class="nav-item nav-sub-item">
+
+                        <span class="nav-icon">
+                            ＋
+                        </span>
+
+                        <span>
+                            Add Student
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- EXAMINATION -->
+
+                <div class="nav-section">
+
+                    <div class="nav-title">
+                        EXAMINATION
+                    </div>
+
+
+                    <a asp-controller="Examination"
+                       asp-action="Index"
+                       class="nav-item">
+
+                        <span class="nav-icon">
+                            📝
+                        </span>
+
+                        <span>
+                            Examinations
+                        </span>
+
+                    </a>
+
+
+                    <a asp-controller="Examination"
+                       asp-action="Create"
+                       class="nav-item nav-sub-item">
+
+                        <span class="nav-icon">
+                            ＋
+                        </span>
+
+                        <span>
+                            Create Examination
+                        </span>
+
+                    </a>
+
+
+                    <a asp-controller="Examination"
+                       asp-action="Evaluation"
+                       class="nav-item nav-sub-item">
+
+                        <span class="nav-icon">
+                            📊
+                        </span>
+
+                        <span>
+                            Evaluation Master
+                        </span>
+
+                    </a>
+
+
+                    <a asp-controller="Examination"
+                       asp-action="GradingScheme"
+                       class="nav-item nav-sub-item">
+
+                        <span class="nav-icon">
+                            🏆
+                        </span>
+
+                        <span>
+                            Grading Scheme
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- SYSTEM -->
+
+                <div class="nav-section">
+
+                    <div class="nav-title">
+                        SYSTEM
+                    </div>
+
+                    <a href="#"
+                       class="nav-item">
+
+                        <span class="nav-icon">
+                            ⚙️
+                        </span>
+
+                        <span>
+                            Settings
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <!-- SIDEBAR FOOTER -->
+
+            <div class="sidebar-footer">
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        A
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong>
+                            Administrator
+                        </strong>
+
+                        <span>
+                            School Admin
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================================
+             MAIN AREA
+        ========================================== -->
+
+        <div class="main-area">
+
+
+            <!-- TOP HEADER -->
+
+            <header class="top-header">
+
+
+                <button type="button"
+                        class="menu-button"
+                        onclick="toggleSidebar()">
+
+                    ☰
+
+                </button>
+
+
+                <div class="breadcrumb">
+
+                    <span>
+                        School ERP
+                    </span>
+
+                    <span class="breadcrumb-arrow">
+                        /
+                    </span>
+
+                    <strong>
+                        @ViewBag.PageTitle
+                    </strong>
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <button type="button"
+                            class="header-button">
+
+                        🔔
+
+                    </button>
+
+
+                    <div class="header-user">
+
+                        <div class="header-avatar">
+                            A
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Admin
+                            </strong>
+
+                            <span>
+                                Administrator
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================================
+                 PAGE CONTENT
+            ========================================== -->
+
+            <main class="page-content">
+
+                @RenderBody()
+
+            </main>
+
+
+            <!-- =========================================
+                 FOOTER
+            ========================================== -->
+
+            <footer class="erp-footer">
+
+                <span>
+                    © @DateTime.Now.Year School ERP
+                </span>
+
+                <span>
+                    School Management System
+                </span>
+
+            </footer>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true">
+    </script>
+
+
+    <script>
+
+            function toggleSidebar() {
+
+                const sidebar =
+                    document.getElementById("sidebar");
+
+                sidebar.classList.toggle("sidebar-open");
+
+            }
+
+    </script>
+
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+    )
+
+</body>
+
+</html>
