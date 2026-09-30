@@ -5,17 +5,20 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 WORKDIR /src
 
-# Copy project file
-COPY ["WebApplication_1.csproj", "./"]
+# Copy the project file from the WebApplication-1 folder
+COPY ["WebApplication-1/WebApplication-1.csproj", "WebApplication-1/"]
 
 # Restore dependencies
-RUN dotnet restore "WebApplication_1.csproj"
+RUN dotnet restore "WebApplication-1/WebApplication-1.csproj"
 
-# Copy source code
+# Copy all source code
 COPY . .
 
-# Build and publish
-RUN dotnet publish "WebApplication_1.csproj" \
+# Build from the project directory
+WORKDIR "/src/WebApplication-1"
+
+# Publish application
+RUN dotnet publish "WebApplication-1.csproj" \
     -c Release \
     -o /app/publish \
     /p:UseAppHost=false
@@ -31,10 +34,10 @@ WORKDIR /app
 # Copy published application
 COPY --from=build /app/publish .
 
-# Render uses port 10000
+# Render will provide PORT
 ENV ASPNETCORE_URLS=http://+:10000
 
 EXPOSE 10000
 
-# Start MVC application
-ENTRYPOINT ["dotnet", "WebApplication_1.dll"]
+# Start application
+ENTRYPOINT ["dotnet", "WebApplication-1.dll"]
