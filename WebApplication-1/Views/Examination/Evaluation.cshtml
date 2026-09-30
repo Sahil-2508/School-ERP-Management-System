@@ -1,0 +1,596 @@
+@model IEnumerable<WebApplication_1.Models.EvaluationMaster>
+
+@{
+    ViewBag.PageTitle = "Evaluation Master";
+
+    var evaluations = Model?.ToList()
+        ?? new List<WebApplication_1.Models.EvaluationMaster>();
+
+    var totalEvaluations = evaluations.Count;
+
+    var activeEvaluations = evaluations.Count(x => x.IsActive);
+
+    var formativeEvaluations = evaluations.Count(x => x.EvaluationType == "Formative");
+
+    var summativeEvaluations = evaluations.Count(x => x.EvaluationType == "Summative");
+}
+
+
+<div class="evaluation-page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+        <div class="header-content">
+
+            <div class="header-icon">
+                📊
+            </div>
+
+            <div>
+
+                <h1>
+                    Evaluation Master
+                </h1>
+
+                <p>
+                    Manage evaluation types, marks, and weightage for examinations.
+                </p>
+
+            </div>
+
+        </div>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+            <span>＋</span>
+            Add Evaluation
+        </a>
+
+    </div>
+
+
+    <!-- STATISTICS CARDS -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-content">
+                <div class="stat-value">@totalEvaluations</div>
+                <div class="stat-label">Total Evaluations</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div class="stat-content">
+                <div class="stat-value">@activeEvaluations</div>
+                <div class="stat-label">Active Evaluations</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-content">
+                <div class="stat-value">@formativeEvaluations</div>
+                <div class="stat-label">Formative Assessments</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <div class="stat-value">@summativeEvaluations</div>
+                <div class="stat-label">Summative Assessments</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- TABLE SECTION -->
+    <div class="table-card">
+
+        <div class="card-header">
+            <h2>Evaluations List</h2>
+            <p>Complete list of all evaluation masters in the system</p>
+        </div>
+
+        @if (evaluations.Any())
+        {
+            <div class="table-responsive">
+
+                <table class="data-table">
+
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Evaluation Name</th>
+                            <th>Type</th>
+                            <th>Max Marks</th>
+                            <th>Pass Marks</th>
+                            <th>Weightage %</th>
+                            <th>Sequence</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var eval in evaluations.OrderBy(x => x.SequenceNo))
+                        {
+                            <tr class="@(eval.IsActive ? "row-active" : "row-inactive")">
+
+                                <td class="code-cell">
+                                    <span class="badge badge-code">@eval.EvaluationCode</span>
+                                </td>
+
+                                <td class="name-cell">
+                                    <strong>@eval.EvaluationName</strong>
+                                    @if (!string.IsNullOrEmpty(eval.Description))
+                                    {
+                                        <p class="text-muted">@eval.Description</p>
+                                    }
+                                </td>
+
+                                <td class="type-cell">
+                                    <span class="badge badge-@(eval.EvaluationType?.ToLower() ?? "info")">
+                                        @eval.EvaluationType
+                                    </span>
+                                </td>
+
+                                <td class="marks-cell">
+                                    <strong>@eval.MaximumMarks</strong>
+                                </td>
+
+                                <td class="marks-cell">
+                                    <strong>@eval.PassMarks</strong>
+                                </td>
+
+                                <td class="weightage-cell">
+                                    <div class="weightage-bar">
+                                        <div class="weightage-fill"
+                                             style="width: @eval.Weightage%">
+                                            @eval.Weightage%
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="sequence-cell">
+                                    @eval.SequenceNo
+                                </td>
+
+                                <td class="status-cell">
+                                    @if (eval.IsActive)
+                                    {
+                                        <span class="badge badge-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Inactive</span>
+                                    }
+                                </td>
+
+                                <td class="actions-cell">
+
+                                    <div class="action-buttons">
+
+                                        <button type="button"
+                                                class="btn btn-view"
+                                                onclick="viewDetails(@eval.EvaluationID)"
+                                                title="View Details">
+                                            👁 View
+                                        </button>
+
+                                        <button type="button"
+                                                class="btn btn-edit"
+                                                onclick="editEvaluation(@eval.EvaluationID)"
+                                                title="Edit">
+                                            ✏ Edit
+                                        </button>
+
+                                        <button type="button"
+                                                class="btn btn-delete"
+                                                onclick="deleteEvaluation(@eval.EvaluationID)"
+                                                title="Delete">
+                                            🗑 Delete
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    📋
+                </div>
+
+                <h3>
+                    No Evaluations Found
+                </h3>
+
+                <p>
+                    Start by creating your first evaluation master.
+                </p>
+
+                <a asp-action="Create"
+                   class="btn btn-primary">
+                    <span>＋</span>
+                    Create Evaluation
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+<style>
+    .evaluation-page {
+        max-width: 1450px;
+        margin: 0 auto;
+        padding: 30px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #263242;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 19px 20px;
+        border: 1px solid #e8edf2;
+        border-radius: 13px;
+        background: white;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
+        transition: box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        box-shadow: 0 6px 20px rgba(15, 23, 42, .08);
+    }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        font-size: 19px;
+    }
+
+    .stat-card:nth-child(1) .stat-icon {
+        background: #edf5ff;
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: #eaf8f3;
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: #fff5e8;
+    }
+
+    .stat-card:nth-child(4) .stat-icon {
+        background: #f3f4f6;
+    }
+
+    .stat-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .stat-label {
+        color: #8a94a3;
+        font-size: 12px;
+    }
+
+    .stat-content strong {
+        color: #263242;
+        font-size: 22px;
+    }
+
+    .table-card {
+        overflow: hidden;
+        border: 1px solid #e6ebf0;
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 8px 28px rgba(15, 23, 42, .05);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 23px 25px;
+        border-bottom: 1px solid #edf0f3;
+    }
+
+    .card-header h2 {
+        margin: 0;
+        color: #263242;
+        font-size: 17px;
+    }
+
+    .card-header p {
+        margin: 5px 0 0;
+        color: #9099a6;
+        font-size: 12px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table thead {
+        background: #f8fafb;
+    }
+
+    .data-table th {
+        padding: 14px 18px;
+        border-bottom: 1px solid #e8edf1;
+        color: #5a6978;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .data-table tbody tr {
+        border-bottom: 1px solid #e8edf1;
+        transition: background-color 0.2s ease;
+    }
+
+    .data-table tbody tr:hover {
+        background-color: #f9fbfc;
+    }
+
+    .data-table td {
+        padding: 14px 18px;
+        color: #344054;
+        font-size: 13px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-code {
+        background: #f1f7f5;
+        color: #4c9181;
+    }
+
+    .badge-success {
+        background: #eaf8f3;
+        color: #28745f;
+    }
+
+    .badge-danger {
+        background: #f3f4f6;
+        color: #5a6978;
+    }
+
+    .badge-formative {
+        background: #fff5e8;
+        color: #a86d42;
+    }
+
+    .badge-summative {
+        background: #eaf8f3;
+        color: #28745f;
+    }
+
+    .badge-info {
+        background: #edf5ff;
+        color: #1e40af;
+    }
+
+    .weightage-bar {
+        background-color: #e8edf2;
+        border-radius: 6px;
+        height: 28px;
+        overflow: hidden;
+        position: relative;
+        min-width: 80px;
+    }
+
+    .weightage-fill {
+        background: linear-gradient(135deg, #5da696, #438879);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: width 0.3s ease;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #5da696, #4b9180);
+        color: white;
+        box-shadow: 0 4px 12px rgba(93, 166, 150, .2);
+    }
+
+    .btn-view:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(93, 166, 150, .28);
+    }
+
+    .btn-edit {
+        background: #f8f4e6;
+        color: #a86d42;
+        border: 1px solid #ead8c3;
+    }
+
+    .btn-edit:hover {
+        background: #f3ead3;
+        border-color: #e0c9b0;
+    }
+
+    .btn-delete {
+        background: #f8f0ef;
+        color: #a54c4c;
+        border: 1px solid #e8d0cd;
+    }
+
+    .btn-delete:hover {
+        background: #f3e0dd;
+        border-color: #dfb8b3;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e6ebf0;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: #263242;
+        margin: 0 0 10px;
+        font-size: 18px;
+    }
+
+    .empty-state p {
+        color: #8a94a3;
+        margin: 0 0 20px;
+        font-size: 13px;
+    }
+
+    .btn-primary {
+        color: white;
+        background: linear-gradient(135deg, #5da696, #4b9180);
+        box-shadow: 0 6px 16px rgba(93, 166, 150, .25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(93, 166, 150, .32);
+    }
+
+    .row-inactive {
+        opacity: 0.75;
+    }
+</style>
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<style>
+    @@media (max-width: 1024px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+
+<script>
+    function viewDetails(id) {
+        alert('View evaluation details for ID: ' + id);
+        // Redirect to details page
+        // window.location.href = '/Examination/Details/' + id;
+    }
+
+    function editEvaluation(id) {
+        alert('Edit evaluation ID: ' + id);
+        // Redirect to edit page
+        // window.location.href = '/Examination/Edit/' + id;
+    }
+
+    function deleteEvaluation(id) {
+        if (confirm('Are you sure you want to delete this evaluation? This action cannot be undone.')) {
+            alert('Deleting evaluation ID: ' + id);
+            // Perform delete action
+            // fetch('/Examination/Delete/' + id, { method: 'POST' })
+            //     .then(response => response.json())
+            //     .then(data => window.location.reload());
+        }
+    }
+</script>

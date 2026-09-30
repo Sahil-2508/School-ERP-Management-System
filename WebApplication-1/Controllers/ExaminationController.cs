@@ -94,6 +94,58 @@ namespace WebApplication_1.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+
+        [HttpGet]
+        public IActionResult Evaluation()
+        {
+            ViewBag.PageTitle = "Evaluation Master";
+
+            var evaluations = new List<EvaluationMaster>
+            {
+                new EvaluationMaster
+                {
+                    EvaluationID = 1,
+                    EvaluationCode = "EVAL-001",
+                    EvaluationName = "Class Test 1",
+                    EvaluationType = "Formative",
+                    MaximumMarks = 20,
+                    PassMarks = 8,
+                    Weightage = 10,
+                    SequenceNo = 1,
+                    IsActive = true,
+                    Description = "First periodic class test"
+                },
+                new EvaluationMaster
+                {
+                    EvaluationID = 2,
+                    EvaluationCode = "EVAL-002",
+                    EvaluationName = "Half Yearly",
+                    EvaluationType = "Summative",
+                    MaximumMarks = 100,
+                    PassMarks = 40,
+                    Weightage = 30,
+                    SequenceNo = 2,
+                    IsActive = true,
+                    Description = "Half yearly examination"
+                },
+                new EvaluationMaster
+                {
+                    EvaluationID = 3,
+                    EvaluationCode = "EVAL-003",
+                    EvaluationName = "Annual Exam",
+                    EvaluationType = "Summative",
+                    MaximumMarks = 100,
+                    PassMarks = 40,
+                    Weightage = 60,
+                    SequenceNo = 3,
+                    IsActive = true,
+                    Description = "Annual examination"
+                }
+            };
+
+            return View(evaluations);
+        }
     }
 }
 
