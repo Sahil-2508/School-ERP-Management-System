@@ -1,97 +1,1888 @@
 ﻿@{
-    ViewBag.PageTitle = "Dashboard";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="welcome-page">
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <div class="welcome-banner">
+    .erp-dashboard {
+        width: 100%;
+        min-height: calc(100vh - 76px);
+        background: #f6f8fa;
+        padding: 28px 32px 40px;
+        color: #172b4d;
+    }
 
-        <div>
+    /* =========================
+       HEADER
+    ========================= */
 
-            <span class="welcome-small">
-                SCHOOL MANAGEMENT SYSTEM
-            </span>
+    .dashboard-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 26px;
+    }
 
-            <h1>
-                Welcome to School ERP 👋
-            </h1>
+    .dashboard-heading-left h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .dashboard-heading-left p {
+        margin: 6px 0 0;
+        color: #8995a2;
+        font-size: 14px;
+    }
+
+    .dashboard-heading-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .dashboard-date {
+        background: #fff;
+        border: 1px solid #e4e9ee;
+        border-radius: 10px;
+        padding: 10px 15px;
+        color: #52606d;
+        font-size: 13px;
+    }
+
+    .dashboard-filter {
+        border: 1px solid #e4e9ee;
+        background: white;
+        border-radius: 10px;
+        padding: 10px 14px;
+        color: #52606d;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    /* =========================
+       KPI CARDS
+    ========================= */
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .kpi-card {
+        background: #fff;
+        border: 1px solid #e7ebef;
+        border-radius: 14px;
+        padding: 20px;
+        min-height: 150px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(30, 45, 60, 0.035);
+    }
+
+    .kpi-card::after {
+        content: "";
+        position: absolute;
+        width: 85px;
+        height: 85px;
+        right: -35px;
+        top: -35px;
+        border-radius: 50%;
+        background: #f2f8f6;
+    }
+
+    .kpi-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .kpi-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 21px;
+    }
+
+    .student-icon {
+        background: #e5f4ef;
+    }
+
+    .teacher-icon {
+        background: #eaf1ff;
+    }
+
+    .exam-icon {
+        background: #fff1e4;
+    }
+
+    .attendance-icon {
+        background: #f0eaff;
+    }
+
+    .kpi-menu {
+        color: #9aa5b1;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .kpi-title {
+        color: #7d8996;
+        font-size: 12px;
+        margin-top: 18px;
+    }
+
+    .kpi-value {
+        font-size: 27px;
+        font-weight: 700;
+        margin-top: 4px;
+        color: #172b4d;
+    }
+
+    .kpi-bottom {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 7px;
+        font-size: 11px;
+    }
+
+    .growth {
+        color: #3e9a76;
+    }
+
+    .muted {
+        color: #9aa5b1;
+    }
+
+    /* =========================
+       MAIN ROW
+    ========================= */
+
+    .dashboard-row {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-card {
+        background: white;
+        border: 1px solid #e7ebef;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(30, 45, 60, 0.035);
+    }
+
+    .card-header {
+        min-height: 68px;
+        padding: 17px 20px;
+        border-bottom: 1px solid #edf0f2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: 650;
+        color: #172b4d;
+    }
+
+    .card-subtitle {
+        font-size: 11px;
+        color: #929daa;
+        margin-top: 3px;
+    }
+
+    .card-action {
+        border: 0;
+        background: transparent;
+        color: #5da696;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    /* =========================
+       ENROLLMENT CHART
+    ========================= */
+
+    .chart-wrapper {
+        padding: 20px;
+    }
+
+    .chart-summary {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        margin-bottom: 18px;
+    }
+
+    .chart-total {
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .chart-growth {
+        color: #3e9a76;
+        font-size: 12px;
+        background: #eaf7f1;
+        padding: 5px 8px;
+        border-radius: 6px;
+    }
+
+    .chart-area {
+        height: 245px;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        padding: 0 5px;
+        border-bottom: 1px solid #e7ebef;
+    }
+
+    .chart-grid-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        border-top: 1px dashed #edf0f2;
+    }
+
+    .line-one {
+        bottom: 75%;
+    }
+
+    .line-two {
+        bottom: 50%;
+    }
+
+    .line-three {
+        bottom: 25%;
+    }
+
+    .month-column {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .bar-group {
+        height: 210px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 5px;
+    }
+
+    .chart-bar {
+        width: 17px;
+        border-radius: 5px 5px 0 0;
+        transition: 0.2s;
+    }
+
+    .chart-bar:hover {
+        opacity: .75;
+    }
+
+    .bar-total {
+        background: #d9eee8;
+    }
+
+    .bar-new {
+        background: #5da696;
+    }
+
+    .month-label {
+        font-size: 10px;
+        color: #929daa;
+        margin-top: 9px;
+    }
+
+    .chart-legend {
+        display: flex;
+        justify-content: flex-end;
+        gap: 18px;
+        margin-top: 15px;
+    }
+
+    .legend-item {
+        font-size: 11px;
+        color: #7d8996;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .legend-total {
+        background: #d9eee8;
+    }
+
+    .legend-new {
+        background: #5da696;
+    }
+
+    /* =========================
+       ATTENDANCE
+    ========================= */
+
+    .attendance-body {
+        padding: 24px;
+    }
+
+    .attendance-main {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .attendance-circle {
+        width: 145px;
+        height: 145px;
+        border-radius: 50%;
+        background:
+            conic-gradient(
+                #5da696 0deg 340deg,
+                #e7f1ee 340deg 360deg
+            );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .attendance-circle::after {
+        content: "";
+        position: absolute;
+        width: 108px;
+        height: 108px;
+        background: white;
+        border-radius: 50%;
+    }
+
+    .attendance-percent {
+        position: relative;
+        z-index: 2;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .attendance-info {
+        flex: 1;
+    }
+
+    .attendance-info h3 {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .attendance-info p {
+        color: #929daa;
+        font-size: 11px;
+        margin: 5px 0 18px;
+    }
+
+    .attendance-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 11px;
+    }
+
+    .attendance-label {
+        color: #7d8996;
+    }
+
+    .attendance-value {
+        font-weight: 600;
+    }
+
+    /* =========================
+       SECOND ROW
+    ========================= */
+
+    .three-column {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* =========================
+       EXAM LIST
+    ========================= */
+
+    .exam-list {
+        padding: 7px 20px 15px;
+    }
+
+    .exam-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 13px 0;
+        border-bottom: 1px solid #f0f2f4;
+    }
+
+    .exam-item:last-child {
+        border-bottom: 0;
+    }
+
+    .exam-left {
+        display: flex;
+        gap: 11px;
+        align-items: center;
+    }
+
+    .exam-avatar {
+        width: 38px;
+        height: 38px;
+        background: #f1eafc;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+    }
+
+    .exam-name {
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .exam-detail {
+        color: #929daa;
+        font-size: 10px;
+        margin-top: 3px;
+    }
+
+    .exam-date {
+        font-size: 10px;
+        color: #5da696;
+        font-weight: 600;
+    }
+
+    /* =========================
+       CLASS DISTRIBUTION
+    ========================= */
+
+    .class-body {
+        padding: 20px;
+    }
+
+    .class-row {
+        margin-bottom: 17px;
+    }
+
+    .class-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .class-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 7px;
+        font-size: 11px;
+    }
+
+    .class-name {
+        font-weight: 600;
+    }
+
+    .class-count {
+        color: #8995a2;
+    }
+
+    .progress {
+        width: 100%;
+        height: 7px;
+        border-radius: 20px;
+        background: #edf2f0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: #5da696;
+        border-radius: 20px;
+    }
+
+    /* =========================
+       PERFORMANCE
+    ========================= */
+
+    .performance-body {
+        padding: 20px;
+    }
+
+    .performance-score {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 18px;
+    }
+
+    .score-number {
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    .score-label {
+        color: #929daa;
+        font-size: 11px;
+    }
+
+    .subject-row {
+        margin-bottom: 14px;
+    }
+
+    .subject-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+
+    .subject-name {
+        color: #52606d;
+    }
+
+    .subject-score {
+        font-weight: 600;
+    }
+
+    /* =========================
+       RECENT ACTIVITY
+    ========================= */
+
+    .activity-list {
+        padding: 7px 20px 15px;
+    }
+
+    .activity-item {
+        display: flex;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid #f0f2f4;
+    }
+
+    .activity-item:last-child {
+        border-bottom: 0;
+    }
+
+    .activity-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: #edf7f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .activity-text {
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .activity-text strong {
+        color: #26384f;
+    }
+
+    .activity-time {
+        color: #a0aab5;
+        font-size: 9px;
+        margin-top: 3px;
+    }
+
+    /* =========================
+       QUICK ACTIONS
+    ========================= */
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 20px;
+    }
+
+    .quick-action {
+        border: 1px solid #e8ecef;
+        border-radius: 11px;
+        padding: 15px 12px;
+        text-decoration: none;
+        color: #26384f;
+        transition: .2s;
+        background: #fff;
+    }
+
+    .quick-action:hover {
+        border-color: #b9d9d1;
+        background: #f7fbfa;
+        transform: translateY(-2px);
+    }
+
+    .quick-action-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        background: #e8f4f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .quick-action-title {
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .quick-action-description {
+        font-size: 9px;
+        color: #929daa;
+        margin-top: 4px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @@media (max-width: 1250px) {
+
+        .kpi-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .three-column {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .three-column .dashboard-card:last-child {
+            grid-column: span 2;
+        }
+    }
+
+    @@media (max-width: 950px) {
+
+        .dashboard-row {
+            grid-template-columns: 1fr;
+        }
+
+        .three-column {
+            grid-template-columns: 1fr;
+        }
+
+        .three-column .dashboard-card:last-child {
+            grid-column: auto;
+        }
+
+        .quick-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 700px) {
+
+        .erp-dashboard {
+            padding: 20px 15px 30px;
+        }
+
+        .dashboard-heading {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .dashboard-heading-right {
+            width: 100%;
+        }
+
+        .dashboard-date,
+        .dashboard-filter {
+            flex: 1;
+        }
+
+        .kpi-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .attendance-main {
+            flex-direction: column;
+        }
+
+        .chart-area {
+            gap: 5px;
+        }
+
+        .chart-bar {
+            width: 11px;
+        }
+
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="erp-dashboard">
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <div class="dashboard-heading">
+
+        <div class="dashboard-heading-left">
+
+            <h1>Dashboard</h1>
 
             <p>
-                Manage students, examinations and academic
-                activities from one place.
+                Welcome back, Administrator. Here's what's happening in your school today.
             </p>
 
         </div>
 
-        <div class="welcome-illustration">
-            🎓
+        <div class="dashboard-heading-right">
+
+            <div class="dashboard-date">
+                📅 @DateTime.Now.ToString("dd MMM yyyy")
+            </div>
+
+            <button class="dashboard-filter">
+                This Month ▾
+            </button>
+
         </div>
 
     </div>
 
 
-    <div class="welcome-section">
+    <!-- ==========================================
+         KPI CARDS
+    =========================================== -->
 
-        <h2>
-            Quick Access
-        </h2>
+    <div class="kpi-grid">
 
-        <p>
-            Choose a module to get started.
-        </p>
+        <!-- STUDENTS -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon student-icon">
+                    🎓
+                </div>
+
+                <div class="kpi-menu">
+                    ⋮
+                </div>
+
+            </div>
+
+            <div class="kpi-title">
+                TOTAL STUDENTS
+            </div>
+
+            <div class="kpi-value">
+                1,248
+            </div>
+
+            <div class="kpi-bottom">
+
+                <span class="growth">
+                    ↑ 8.2%
+                </span>
+
+                <span class="muted">
+                    vs last month
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- TEACHERS -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon teacher-icon">
+                    👨‍🏫
+                </div>
+
+                <div class="kpi-menu">
+                    ⋮
+                </div>
+
+            </div>
+
+            <div class="kpi-title">
+                TOTAL TEACHERS
+            </div>
+
+            <div class="kpi-value">
+                86
+            </div>
+
+            <div class="kpi-bottom">
+
+                <span class="growth">
+                    ↑ 4
+                </span>
+
+                <span class="muted">
+                    new this year
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- EXAMINATIONS -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon exam-icon">
+                    📝
+                </div>
+
+                <div class="kpi-menu">
+                    ⋮
+                </div>
+
+            </div>
+
+            <div class="kpi-title">
+                EXAMINATIONS
+            </div>
+
+            <div class="kpi-value">
+                12
+            </div>
+
+            <div class="kpi-bottom">
+
+                <span class="growth">
+                    3 upcoming
+                </span>
+
+                <span class="muted">
+                    this month
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ATTENDANCE -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon attendance-icon">
+                    📊
+                </div>
+
+                <div class="kpi-menu">
+                    ⋮
+                </div>
+
+            </div>
+
+            <div class="kpi-title">
+                ATTENDANCE RATE
+            </div>
+
+            <div class="kpi-value">
+                94.6%
+            </div>
+
+            <div class="kpi-bottom">
+
+                <span class="growth">
+                    ↑ 2.1%
+                </span>
+
+                <span class="muted">
+                    vs last month
+                </span>
+
+            </div>
+
+        </div>
 
     </div>
 
 
-    <div class="welcome-cards">
+    <!-- ==========================================
+         CHART + ATTENDANCE
+    =========================================== -->
 
+    <div class="dashboard-row">
 
-        <a asp-controller="Student"
-           asp-action="Index"
-           class="welcome-card">
+        <!-- ENROLLMENT -->
 
-            <div class="welcome-card-icon">
-                👨‍🎓
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <div class="card-title">
+                        Student Enrollment
+                    </div>
+
+                    <div class="card-subtitle">
+                        Student registration overview
+                    </div>
+
+                </div>
+
+                <button class="card-action">
+                    View Report →
+                </button>
+
             </div>
 
-            <h3>
-                Student Management
-            </h3>
 
-            <p>
-                Manage student records,
-                classes and enrollment.
-            </p>
+            <div class="chart-wrapper">
 
-            <span>
-                Open Students →
-            </span>
+                <div class="chart-summary">
 
-        </a>
+                    <div class="chart-total">
+                        1,248
+                    </div>
+
+                    <div class="chart-growth">
+                        +8.2%
+                    </div>
+
+                </div>
 
 
-        <a asp-controller="Examination"
-           asp-action="Index"
-           class="welcome-card">
+                <div class="chart-area">
 
-            <div class="welcome-card-icon exam">
-                📝
+                    <div class="chart-grid-line line-one"></div>
+                    <div class="chart-grid-line line-two"></div>
+                    <div class="chart-grid-line line-three"></div>
+
+
+                    <div class="month-column">
+
+                        <div class="bar-group">
+
+                            <div class="chart-bar bar-total"
+                                 style="height: 48%;">
+                            </div>
+
+                            <div class="chart-bar bar-new"
+                                 style="height: 35%;">
+                            </div>
+
+                        </div>
+
+                        <div class="month-label">
+                            Apr
+                        </div>
+
+                    </div>
+
+
+                    <div class="month-column">
+
+                        <div class="bar-group">
+
+                            <div class="chart-bar bar-total"
+                                 style="height: 55%;">
+                            </div>
+
+                            <div class="chart-bar bar-new"
+                                 style="height: 43%;">
+                            </div>
+
+                        </div>
+
+                        <div class="month-label">
+                            May
+                        </div>
+
+                    </div>
+
+
+                    <div class="month-column">
+
+                        <div class="bar-group">
+
+                            <div class="chart-bar bar-total"
+                                 style="height: 63%;">
+                            </div>
+
+                            <div class="chart-bar bar-new"
+                                 style="height: 48%;">
+                            </div>
+
+                        </div>
+
+                        <div class="month-label">
+                            Jun
+                        </div>
+
+                    </div>
+
+
+                    <div class="month-column">
+
+                        <div class="bar-group">
+
+                            <div class="chart-bar bar-total"
+                                 style="height: 69%;">
+                            </div>
+
+                            <div class="chart-bar bar-new"
+                                 style="height: 55%;">
+                            </div>
+
+                        </div>
+
+                        <div class="month-label">
+                            Jul
+                        </div>
+
+                    </div>
+
+
+                    <div class="month-column">
+
+                        <div class="bar-group">
+
+                            <div class="chart-bar bar-total"
+                                 style="height: 78%;">
+                            </div>
+
+                            <div class="chart-bar bar-new"
+                                 style="height: 62%;">
+                            </div>
+
+                        </div>
+
+                        <div class="month-label">
+                            Aug
+                        </div>
+
+                    </div>
+
+
+                    <div class="month-column">
+
+                        <div class="bar-group">
+
+                            <div class="chart-bar bar-total"
+                                 style="height: 88%;">
+                            </div>
+
+                            <div class="chart-bar bar-new"
+                                 style="height: 70%;">
+                            </div>
+
+                        </div>
+
+                        <div class="month-label">
+                            Sep
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-legend">
+
+                    <div class="legend-item">
+                        <span class="legend-dot legend-total"></span>
+                        Total Students
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot legend-new"></span>
+                        New Students
+                    </div>
+
+                </div>
+
             </div>
 
-            <h3>
-                Examination
-            </h3>
+        </div>
 
-            <p>
-                Manage examinations,
-                evaluations and grading.
-            </p>
 
-            <span>
-                Open Examination →
-            </span>
+        <!-- ATTENDANCE -->
 
-        </a>
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <div class="card-title">
+                        Attendance Overview
+                    </div>
+
+                    <div class="card-subtitle">
+                        Current academic month
+                    </div>
+
+                </div>
+
+                <button class="card-action">
+                    Details →
+                </button>
+
+            </div>
+
+
+            <div class="attendance-body">
+
+                <div class="attendance-main">
+
+                    <div class="attendance-circle">
+
+                        <div class="attendance-percent">
+                            94.6%
+                        </div>
+
+                    </div>
+
+
+                    <div class="attendance-info">
+
+                        <h3>
+                            Excellent Attendance
+                        </h3>
+
+                        <p>
+                            Based on 1,248 students
+                        </p>
+
+
+                        <div class="attendance-row">
+
+                            <span class="attendance-label">
+                                Present
+                            </span>
+
+                            <span class="attendance-value">
+                                1,181
+                            </span>
+
+                        </div>
+
+
+                        <div class="attendance-row">
+
+                            <span class="attendance-label">
+                                Absent
+                            </span>
+
+                            <span class="attendance-value">
+                                42
+                            </span>
+
+                        </div>
+
+
+                        <div class="attendance-row">
+
+                            <span class="attendance-label">
+                                Leave
+                            </span>
+
+                            <span class="attendance-value">
+                                25
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         THREE COLUMN SECTION
+    =========================================== -->
+
+    <div class="three-column">
+
+
+        <!-- UPCOMING EXAMS -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <div class="card-title">
+                        Upcoming Examinations
+                    </div>
+
+                    <div class="card-subtitle">
+                        Next scheduled exams
+                    </div>
+                </div>
+
+                <button class="card-action">
+                    View All
+                </button>
+
+            </div>
+
+
+            <div class="exam-list">
+
+                <div class="exam-item">
+
+                    <div class="exam-left">
+
+                        <div class="exam-avatar">
+                            📐
+                        </div>
+
+                        <div>
+
+                            <div class="exam-name">
+                                Mathematics
+                            </div>
+
+                            <div class="exam-detail">
+                                Class 10 · Theory
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="exam-date">
+                        05 Oct
+                    </div>
+
+                </div>
+
+
+                <div class="exam-item">
+
+                    <div class="exam-left">
+
+                        <div class="exam-avatar">
+                            🔬
+                        </div>
+
+                        <div>
+
+                            <div class="exam-name">
+                                Science
+                            </div>
+
+                            <div class="exam-detail">
+                                Class 10 · Theory
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="exam-date">
+                        08 Oct
+                    </div>
+
+                </div>
+
+
+                <div class="exam-item">
+
+                    <div class="exam-left">
+
+                        <div class="exam-avatar">
+                            📚
+                        </div>
+
+                        <div>
+
+                            <div class="exam-name">
+                                English
+                            </div>
+
+                            <div class="exam-detail">
+                                Class 9 · Theory
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="exam-date">
+                        12 Oct
+                    </div>
+
+                </div>
+
+
+                <div class="exam-item">
+
+                    <div class="exam-left">
+
+                        <div class="exam-avatar">
+                            💻
+                        </div>
+
+                        <div>
+
+                            <div class="exam-name">
+                                Computer Science
+                            </div>
+
+                            <div class="exam-detail">
+                                Class 8 · Practical
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="exam-date">
+                        15 Oct
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLASS DISTRIBUTION -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <div class="card-title">
+                        Class Distribution
+                    </div>
+
+                    <div class="card-subtitle">
+                        Students by class
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="class-body">
+
+                <div class="class-row">
+
+                    <div class="class-info">
+
+                        <span class="class-name">
+                            Class 10
+                        </span>
+
+                        <span class="class-count">
+                            286
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar"
+                             style="width:82%;">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="class-row">
+
+                    <div class="class-info">
+
+                        <span class="class-name">
+                            Class 9
+                        </span>
+
+                        <span class="class-count">
+                            248
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar"
+                             style="width:71%;">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="class-row">
+
+                    <div class="class-info">
+
+                        <span class="class-name">
+                            Class 8
+                        </span>
+
+                        <span class="class-count">
+                            231
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar"
+                             style="width:65%;">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="class-row">
+
+                    <div class="class-info">
+
+                        <span class="class-name">
+                            Class 7
+                        </span>
+
+                        <span class="class-count">
+                            198
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar"
+                             style="width:57%;">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="class-row">
+
+                    <div class="class-info">
+
+                        <span class="class-name">
+                            Class 6
+                        </span>
+
+                        <span class="class-count">
+                            165
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar"
+                             style="width:48%;">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERFORMANCE -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <div class="card-title">
+                        Academic Performance
+                    </div>
+
+                    <div class="card-subtitle">
+                        Average subject scores
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="performance-body">
+
+                <div class="performance-score">
+
+                    <div>
+
+                        <div class="score-number">
+                            82.4%
+                        </div>
+
+                        <div class="score-label">
+                            Overall Average
+                        </div>
+
+                    </div>
+
+                    <div class="growth">
+                        ↑ 4.8%
+                    </div>
+
+                </div>
+
+
+                <div class="subject-row">
+
+                    <div class="subject-top">
+
+                        <span class="subject-name">
+                            Mathematics
+                        </span>
+
+                        <span class="subject-score">
+                            87%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-bar"
+                             style="width:87%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="subject-row">
+
+                    <div class="subject-top">
+
+                        <span class="subject-name">
+                            Science
+                        </span>
+
+                        <span class="subject-score">
+                            84%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-bar"
+                             style="width:84%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="subject-row">
+
+                    <div class="subject-top">
+
+                        <span class="subject-name">
+                            English
+                        </span>
+
+                        <span class="subject-score">
+                            81%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-bar"
+                             style="width:81%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="subject-row">
+
+                    <div class="subject-top">
+
+                        <span class="subject-name">
+                            Computer
+                        </span>
+
+                        <span class="subject-score">
+                            91%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-bar"
+                             style="width:91%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         RECENT ACTIVITY
+    =========================================== -->
+
+    <div class="dashboard-row">
+
+
+        <!-- ACTIVITY -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <div class="card-title">
+                        Recent Activity
+                    </div>
+
+                    <div class="card-subtitle">
+                        Latest system activities
+                    </div>
+
+                </div>
+
+                <button class="card-action">
+                    View All →
+                </button>
+
+            </div>
+
+
+            <div class="activity-list">
+
+                <div class="activity-item">
+
+                    <div class="activity-icon">
+                        🎓
+                    </div>
+
+                    <div class="activity-text">
+
+                        <strong>
+                            Aarav Sharma
+                        </strong>
+
+                        was added as a new student.
+
+                        <div class="activity-time">
+                            10 minutes ago
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activity-item">
+
+                    <div class="activity-icon">
+                        📝
+                    </div>
+
+                    <div class="activity-text">
+
+                        <strong>
+                            Mathematics Examination
+                        </strong>
+
+                        was scheduled for Class 10.
+
+                        <div class="activity-time">
+                            35 minutes ago
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activity-item">
+
+                    <div class="activity-icon">
+                        📊
+                    </div>
+
+                    <div class="activity-text">
+
+                        <strong>
+                            September Attendance
+                        </strong>
+
+                        report was generated.
+
+                        <div class="activity-time">
+                            1 hour ago
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <div class="card-title">
+                        Quick Actions
+                    </div>
+
+                    <div class="card-subtitle">
+                        Frequently used actions
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+                <a href="#" class="quick-action">
+
+                    <div class="quick-action-icon">
+                        ➕
+                    </div>
+
+                    <div class="quick-action-title">
+                        Add Student
+                    </div>
+
+                    <div class="quick-action-description">
+                        Create student
+                    </div>
+
+                </a>
+
+
+                <a href="#" class="quick-action">
+
+                    <div class="quick-action-icon">
+                        📝
+                    </div>
+
+                    <div class="quick-action-title">
+                        Examination
+                    </div>
+
+                    <div class="quick-action-description">
+                        Create exam
+                    </div>
+
+                </a>
+
+
+                <a href="#" class="quick-action">
+
+                    <div class="quick-action-icon">
+                        📊
+                    </div>
+
+                    <div class="quick-action-title">
+                        Reports
+                    </div>
+
+                    <div class="quick-action-description">
+                        View reports
+                    </div>
+
+                </a>
+
+
+                <a href="#" class="quick-action">
+
+                    <div class="quick-action-icon">
+                        📅
+                    </div>
+
+                    <div class="quick-action-title">
+                        Attendance
+                    </div>
+
+                    <div class="quick-action-description">
+                        Manage attendance
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
