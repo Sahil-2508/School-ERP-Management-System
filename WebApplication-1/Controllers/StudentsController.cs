@@ -1,65 +1,58 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication_1.Data.DTOs;
 using WebApplication_1.Models;
+using WebApplication_1.Services;
 
 namespace WebApplication_1.Controllers
 {
     public class StudentsController : Controller
     {
-        private static List<Student> students = new()
+        private readonly IStudentService _studentService;
+        private readonly ILogger<StudentsController> _logger;
+
+        public StudentsController(IStudentService studentService, ILogger<StudentsController> logger)
         {
-            new Student
-            {
-                StudentId = 1,
-                StudentName = "Rahul Patil",
-                Email = "rahul@gmail.com",
-                ClassName = "10th",
-                Division = "A",
-                PhoneNumber = "9876543210",
-                IsActive = true
-            },
-
-            new Student
-            {
-                StudentId = 2,
-                StudentName = "Priya Sharma",
-                Email = "priya@gmail.com",
-                ClassName = "9th",
-                Division = "B",
-                PhoneNumber = "9876543211",
-                IsActive = true
-            },
-
-            new Student
-            {
-                StudentId = 3,
-                StudentName = "Amit Joshi",
-                Email = "amit@gmail.com",
-                ClassName = "8th",
-                Division = "A",
-                PhoneNumber = "9876543212",
-                IsActive = false
-            }
-        };
+            _studentService = studentService;
+            _logger = logger;
+        }
 
         // GET: /Students
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            ViewBag.PageTitle = "Student Management";
-
-            return View(students);
+            try
+            {
+                ViewBag.PageTitle = "Student Management";
+                var students = await _studentService.GetAllStudentsAsync(pageNumber, 10);
+                return View(students);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading students");
+                TempData["ErrorMessage"] = "An error occurred while loading students.";
+                return View(new List<Student>());
+            }
         }
 
         // GET: /Students/Details/1
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var student = students.FirstOrDefault(x => x.StudentId == id);
-
-            if (student == null)
+            try
             {
-                return NotFound();
-            }
+                var student = await _studentService.GetStudentByIdAsync(id);
 
-            return View(student);
+                if (student == null)
+                {
+                    return NotFound();
+                }
+
+                return View(student);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading student details");
+                TempData["ErrorMessage"] = "An error occurred while loading student details.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: /Students/Create
@@ -72,88 +65,115 @@ namespace WebApplication_1.Controllers
         // POST: /Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Student student)
+        public async Task<IActionResult> Create(CreateStudentDto model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(student);
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var (success, studentId, message) = await _studentService.CreateStudentAsync(model);
+
+                if (!success)
+                {
+                    ModelState.AddModelError("", message);
+                    return View(model);
+                }
+
+                TempData["SuccessMessage"] = $"Student created successfully (ID: {studentId}).";
+
+                return RedirectToAction(nameof(Index));
             }
-
-            student.StudentId = students.Count + 1;
-
-            students.Add(student);
-
-            TempData["SuccessMessage"] =
-                "Student created successfully.";
-
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating student");
+                ModelState.AddModelError("", "An error occurred while creating the student.");
+                return View(model);
+            }
         }
 
         // GET: /Students/Edit/1
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var student = students.FirstOrDefault(x => x.StudentId == id);
-
-            if (student == null)
+            try
             {
-                return NotFound();
-            }
+                var student = await _studentService.GetStudentByIdAsync(id);
 
-            return View(student);
+                if (student == null)
+                {
+                    return NotFound();
+                }
+
+                return View(student);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading student for edit");
+                TempData["ErrorMessage"] = "An error occurred while loading the student.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: /Students/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Student student)
+        public async Task<IActionResult> Edit(Student student)
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(student);
+                }
+
+                var (success, message) = await _studentService.UpdateStudentAsync(student);
+
+                if (!success)
+                {
+                    ModelState.AddModelError("", message);
+                    return View(student);
+                }
+
+                TempData["SuccessMessage"] = "Student updated successfully.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating student");
+                ModelState.AddModelError("", "An error occurred while updating the student.");
                 return View(student);
             }
-
-            var existingStudent =
-                students.FirstOrDefault(x =>
-                    x.StudentId == student.StudentId);
-
-            if (existingStudent == null)
-            {
-                return NotFound();
-            }
-
-            existingStudent.StudentName = student.StudentName;
-            existingStudent.Email = student.Email;
-            existingStudent.ClassName = student.ClassName;
-            existingStudent.Division = student.Division;
-            existingStudent.PhoneNumber = student.PhoneNumber;
-            existingStudent.IsActive = student.IsActive;
-
-            TempData["SuccessMessage"] =
-                "Student updated successfully.";
-
-            return RedirectToAction(nameof(Index));
         }
 
         // POST: /Students/Delete/1
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var student =
-                students.FirstOrDefault(x => x.StudentId == id);
-
-            if (student == null)
+            try
             {
-                return NotFound();
+                var (success, message) = await _studentService.DeleteStudentAsync(id);
+
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = message;
+                    return RedirectToAction(nameof(Index));
+                }
+
+                TempData["SuccessMessage"] = "Student deleted successfully.";
+
+                return RedirectToAction(nameof(Index));
             }
-
-            students.Remove(student);
-
-            TempData["SuccessMessage"] =
-                "Student deleted successfully.";
-
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting student");
+                TempData["ErrorMessage"] = "An error occurred while deleting the student.";
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }
