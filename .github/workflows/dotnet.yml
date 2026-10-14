@@ -1,7 +1,5 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: ASP.NET Core MVC CI
+name: ASP.NET Core MVC CI-CD
 
 on:
   push:
@@ -12,30 +10,54 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
-
   build:
-
+    name: Build, Test and Publish
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout code
+      # 1. Download source code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # 2. Install .NET 8 SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
+      # 3. Restore NuGet packages
+      - name: Restore Dependencies
         run: dotnet restore
 
-      - name: Build
+      # 4. Build application
+      - name: Build Application
         run: dotnet build --configuration Release --no-restore
 
-      - name: Test
+      # 5. Run tests
+      - name: Run Tests
         run: dotnet test --configuration Release --no-build
 
-      - name: Publish
-        run: dotnet publish --configuration Release --output ./publish
+      # 6. Publish application
+      - name: Publish Application
+        run: dotnet publish --configuration Release --no-build --output ./publish
+
+      # 7. Deploy to Render only after a successful push to main
+      - name: Deploy to Render
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.PRODUCTION }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "ERROR: GitHub Secret PRODUCTION is missing."
+            exit 1
+          fi
+
+          curl --fail --silent --show-error \
+            --request POST \
+            "$RENDER_DEPLOY_HOOK"
+
+          echo "Render deployment trigger sent successfully."
