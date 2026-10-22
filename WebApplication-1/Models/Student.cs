@@ -14,6 +14,7 @@ namespace WebApplication_1.Models
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
+        [Required]
         [Display(Name = "Class")]
         public string ClassName { get; set; } = string.Empty;
 
