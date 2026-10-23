@@ -1,0 +1,34 @@
+
+name: Sync GitHub to Bitbucket
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitHub repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to Bitbucket
+        env:
+          BB_USERNAME: ${{ secrets.BITBUCKET_USERNAME }}
+          BB_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
+          BB_WORKSPACE: ${{ secrets.BITBUCKET_WORKSPACE }}
+          BB_REPO: ${{ secrets.BITBUCKET_REPO }}
+        run: |
+          set -eu
+
+          git push \
+            "https://x-token-auth:${BB_TOKEN}@bitbucket.org/${BB_WORKSPACE}/${BB_REPO}.git" \
+            "HEAD:${GITHUB_REF_NAME}"
