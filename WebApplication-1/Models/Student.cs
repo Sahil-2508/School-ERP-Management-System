@@ -14,11 +14,12 @@ namespace WebApplication_1.Models
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
+        [Required]
         [Display(Name = "Class")]
         public string ClassName { get; set; } = string.Empty;
 
         public string Division { get; set; } = string.Empty;
-
+        [Required]
         [Display(Name = "Phone")]
         public string PhoneNumber { get; set; } = string.Empty;
 
