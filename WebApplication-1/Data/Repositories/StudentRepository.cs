@@ -4,11 +4,7 @@ using WebApplication_1.Models;
 
 namespace WebApplication_1.Data.Repositories
 {
-    /// <summary>
-    /// Repository for Student data access
-    /// Handles all database operations for Student entity
-    /// </summary>
-    public interface IStudentRepository
+       public interface IStudentRepository
     {
         Task<CreateStudentResultDto> CreateStudentAsync(CreateStudentDto createStudentDto);
         Task<Student?> GetStudentByIdAsync(int studentId);
@@ -18,11 +14,8 @@ namespace WebApplication_1.Data.Repositories
         Task<bool> StudentExistsByEmailAsync(string email);
     }
 
-    /// <summary>
-    /// Repository implementation for Student data access using Stored Procedures
-    /// </summary>
-    public class StudentRepository : IStudentRepository
-    {
+        public class StudentRepository : IStudentRepository
+        {
         private readonly SchoolDbContext _context;
         private readonly ILogger<StudentRepository> _logger;
 
@@ -32,20 +25,7 @@ namespace WebApplication_1.Data.Repositories
             _logger = logger;
         }
 
-        /// <summary>
-        /// Creates a new student using sp_CreateStudent stored procedure
-        /// Maps CreateStudentDto parameters to SQL SP parameters
-        /// 
-        /// SQL SP: sp_CreateStudent
-        /// Parameters:
-        ///   @StudentName VARCHAR(255) -> createStudentDto.StudentName
-        ///   @Email VARCHAR(255) -> createStudentDto.Email
-        ///   @ClassName VARCHAR(50) = NULL -> createStudentDto.ClassName
-        ///   @Division VARCHAR(10) = NULL -> createStudentDto.Division
-        ///   @PhoneNumber VARCHAR(20) = NULL -> createStudentDto.PhoneNumber
-        /// 
-        /// Return: StudentId (SCOPE_IDENTITY)
-        /// </summary>
+       
         public async Task<CreateStudentResultDto> CreateStudentAsync(CreateStudentDto createStudentDto)
         {
             try
@@ -77,9 +57,7 @@ namespace WebApplication_1.Data.Repositories
             }
         }
 
-        /// <summary>
-        /// Retrieves a student by StudentId
-        /// </summary>
+       
         public async Task<Student?> GetStudentByIdAsync(int studentId)
         {
             try
@@ -95,10 +73,7 @@ namespace WebApplication_1.Data.Repositories
             }
         }
 
-        /// <summary>
-        /// Retrieves all active students with pagination
-        /// Uses LINQ for simplicity (can be replaced with sp_GetAllStudents SP later)
-        /// </summary>
+        
         public async Task<List<Student>> GetAllStudentsAsync(int pageNumber = 1, int pageSize = 10)
         {
             try
@@ -119,9 +94,7 @@ namespace WebApplication_1.Data.Repositories
             }
         }
 
-        /// <summary>
-        /// Updates an existing student record
-        /// </summary>
+       
         public async Task<bool> UpdateStudentAsync(Student student)
         {
             try
@@ -155,9 +128,7 @@ namespace WebApplication_1.Data.Repositories
             }
         }
 
-        /// <summary>
-        /// Soft delete - marks student as inactive
-        /// </summary>
+        
         public async Task<bool> DeleteStudentAsync(int studentId)
         {
             try
@@ -185,9 +156,7 @@ namespace WebApplication_1.Data.Repositories
             }
         }
 
-        /// <summary>
-        /// Checks if a student exists by email
-        /// </summary>
+       
         public async Task<bool> StudentExistsByEmailAsync(string email)
         {
             try
